@@ -1,10 +1,14 @@
-from flask import Flask, request, jsonify, render_template
-import joblib
-import pandas as pd
-import os
+from flask import Flask
 
 app = Flask(__name__)
-# Initialize Flask app
+
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def catch_all(path):
+    # Just return a simple message for ANY request
+    return f"Vercel Flask App Reached! Path: /{path}", 200
+
+# No model loading, no templates, just a basic Flask response
 
 # --- Load Model and Encoder ---
 # Construct paths relative to this script's location
