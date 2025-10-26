@@ -3,86 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pest Risk Predictor</title>
+    <title>Rodent Chance Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <style>
-        body { font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; }
-        label { display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 8px; margin-top: 5px; }
-        button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
-        #result { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+        /* Enhanced Forest Theme */
+        body {
+            background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 50%, #c3e6cb 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+        }
+        
+        .navbar-custom {
+            background: linear-gradient(90deg, #2d5016 0%, #556B2F 50%, #3d4f1f 100%);
+            border-bottom: 3px solid #8FBC8F;
+        }
+        
+        .navbar-brand {
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-weight: 600;
+        }
+        
+        .container {
+            max-width: 700px;
+            background: linear-gradient(145deg, #ffffff 0%, #f8fffe 100%);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), 0 4px 10px rgba(85, 107, 47, 0.1);
+            margin-top: 2rem;
+            border: 2px solid #90EE90;
+            position: relative;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #228B22, #32CD32, #90EE90, #98FB98);
+            border-radius: 17px;
+            z-index: -1;
+        }
+        
+        h2 {
+            color: #2F4F2F;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            font-weight: 700;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #2d5016;
+            text-shadow: 0.5px 0.5px 1px rgba(0,0,0,0.1);
+        }
+        
+        .form-select, .form-control {
+            border: 2px solid #90EE90;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-select:focus, .form-control:focus {
+            border-color: #32CD32;
+            box-shadow: 0 0 0 0.2rem rgba(50, 205, 50, 0.25);
+        }
+        
+        .btn-predict {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 50%, #CD853F 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+        
+        .btn-predict:hover {
+            background: linear-gradient(135deg, #A0522D 0%, #CD853F 50%, #DEB887 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 69, 19, 0.4);
+            color: white;
+        }
+        
+        .btn-predict:active {
+            transform: translateY(0);
+        }
+        
+        #result {
+            font-size: 1.2em;
+            font-weight: bold;
+            border-radius: 12px;
+            border: 2px solid;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* Enhanced color coding for results */
+        .alert-high-risk { 
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #c62828; 
+            border-color: #f8bbd9;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.2);
+        }
+        
+        .alert-medium-risk { 
+            background: linear-gradient(135deg, #fffef7 0%, #fff8e1 100%);
+            color: #f57f17; 
+            border-color: #ffecb3;
+            box-shadow: 0 4px 15px rgba(245, 127, 23, 0.2);
+        }
+        
+        .alert-low-risk { 
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e8 100%);
+            color: #2e7d32; 
+            border-color: #c8e6c9;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.2);
+        }
+        
+        .alert-calculating { 
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1565c0; 
+            border-color: #90caf9;
+            box-shadow: 0 4px 15px rgba(21, 101, 192, 0.2);
+        }
+        
+        .alert-error { 
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #c62828; 
+            border-color: #f8bbd9;
+            box-shadow: 0 4px 15px rgba(198, 40, 40, 0.2);
+        }
+        
+        .alert-secondary {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            color: #495057;
+            border-color: #dee2e6;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.1);
+        }
+        
+        /* Add some forest-themed decorative elements */
+        .row {
+            position: relative;
+        }
+        
+        .row::before {
+            content: '🌿';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+        
+        /* Animate the tree emojis in navbar */
+        @keyframes sway {
+            0%, 100% { transform: rotate(-1deg); }
+            50% { transform: rotate(1deg); }
+        }
+        
+        .navbar-brand {
+            animation: sway 3s ease-in-out infinite;
+        }
+        
+        /* Add hover effects to form elements */
+        .form-select:hover, .form-control:hover {
+            border-color: #66BB6A;
+            box-shadow: 0 2px 8px rgba(102, 187, 106, 0.2);
+        }
     </style>
 </head>
 <body>
-    <h1>Pest Risk Predictor</h1>
-    <form id="prediction-form">
-        <label for="soil_type">Soil Type:</label>
-        <select id="soil_type" name="soil_type" required>
-            <option value="Silt Loam">Silt Loam</option>
-            <option value="Sandy Loam">Sandy Loam</option>
-            <option value="Clay Loam">Clay Loam</option>
-            <option value="Loam">Loam</option>
-            <option value="Muck">Muck</option>
-        </select>
+    <nav class="navbar navbar-dark navbar-custom mb-4">
+      <div class="container-fluid justify-content-center">
+        <span class="navbar-brand mb-0 h1">🌲 Rodent Chance Predictor 🌲</span>
+      </div>
+    </nav>
 
-        <label for="crop_type">Crop Type:</label>
-        <select id="crop_type" name="crop_type" required>
-            <option value="Corn">Corn</option>
-            <option value="Soybeans">Soybeans</option>
-            <option value="Alfalfa">Alfalfa</option>
-            <option value="Wheat">Wheat</option>
-            <option value="Cotton">Cotton</option>
-            <option value="Grapes">Grapes</option>
-            <option value="Almonds">Almonds</option>
-            <option value="Tomatoes">Tomatoes</option>
-            <option value="Lettuce">Lettuce</option>
-            <option value="Sugarcane">Sugarcane</option>
-            <option value="Vegetables">Vegetables</option>
-             <option value="Sweet Corn">Sweet Corn</option>
-            <option value="Barley">Barley</option>
-            <option value="Lentils">Lentils</option>
-            <option value="Tobacco">Tobacco</option>
-            <option value="Rice">Rice</option>
+    <div class="container">
+        <h2 class="text-center mb-4">🌱 Analyze Your Plot's Risk 🌱</h2>
+        <form id="prediction-form">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label for="soil_type" class="form-label">🌍 Soil Type:</label>
+                    <select id="soil_type" name="soil_type" class="form-select" required>
+                         <option value="Silt Loam" selected>Silt Loam</option>
+                        <option value="Sandy Loam">Sandy Loam</option>
+                        <option value="Clay Loam">Clay Loam</option>
+                        <option value="Loam">Loam</option>
+                        <option value="Muck">Muck</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="crop_type" class="form-label">🌾 Crop Type:</label>
+                     <select id="crop_type" name="crop_type" class="form-select" required>
+                        <option value="Corn" selected>Corn</option>
+                        <option value="Soybeans">Soybeans</option>
+                        <option value="Alfalfa">Alfalfa</option>
+                        <option value="Wheat">Wheat</option>
+                        <option value="Cotton">Cotton</option>
+                        <option value="Grapes">Grapes</option>
+                        <option value="Almonds">Almonds</option>
+                        <option value="Tomatoes">Tomatoes</option>
+                        <option value="Lettuce">Lettuce</option>
+                        <option value="Sugarcane">Sugarcane</option>
+                        <option value="Vegetables">Vegetables</option>
+                        <option value="Sweet Corn">Sweet Corn</option>
+                        <option value="Barley">Barley</option>
+                        <option value="Lentils">Lentils</option>
+                        <option value="Tobacco">Tobacco</option>
+                        <option value="Rice">Rice</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="tillage_type" class="form-label">🚜 Tillage Type:</label>
+                    <select id="tillage_type" name="tillage_type" class="form-select" required>
+                        <option value="No-Till" selected>No-Till</option>
+                        <option value="Conventional">Conventional</option>
+                        <option value="Minimum-Till">Minimum-Till</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="season" class="form-label">🌤️ Season:</label>
+                    <select id="season" name="season" class="form-select" required>
+                        <option value="Spring">Spring</option>
+                        <option value="Summer" selected>Summer</option>
+                        <option value="Fall">Fall</option>
+                        <option value="Winter">Winter</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="temp_7day_avg_f" class="form-label">🌡️ Avg Temp Last 7 Days (°F):</label>
+                    <input type="number" step="0.1" id="temp_7day_avg_f" name="temp_7day_avg_f" class="form-control" required placeholder="e.g., 75.5">
+                </div>
+                <div class="col-md-6">
+                    <label for="precip_7day_total_in" class="form-label">🌧️ Total Precip Last 7 Days (in):</label>
+                    <input type="number" step="0.1" id="precip_7day_total_in" name="precip_7day_total_in" class="form-control" required placeholder="e.g., 1.2">
+                </div>
+            </div>
 
-        </select>
+            <div class="d-grid gap-2 mt-4">
+                 <button type="submit" class="btn btn-predict btn-lg">🔍 Predict Risk</button>
+            </div>
+        </form>
 
-        <label for="tillage_type">Tillage Type:</label>
-        <select id="tillage_type" name="tillage_type" required>
-            <option value="No-Till">No-Till</option>
-            <option value="Conventional">Conventional</option>
-            <option value="Minimum-Till">Minimum-Till</option>
-        </select>
+        <div id="result" class="alert alert-secondary mt-4 text-center" role="alert" style="min-height: 60px;">
+            Enter conditions and click predict to see results 📊
+        </div>
+    </div>
 
-        <label for="season">Season:</label>
-        <select id="season" name="season" required>
-            <option value="Spring">Spring</option>
-            <option value="Summer">Summer</option>
-            <option value="Fall">Fall</option>
-            <option value="Winter">Winter</option>
-        </select>
-
-        <label for="temp_7day_avg_f">Avg Temp Last 7 Days (°F):</label>
-        <input type="number" step="0.1" id="temp_7day_avg_f" name="temp_7day_avg_f" required>
-
-        <label for="precip_7day_total_in">Total Precip Last 7 Days (in):</label>
-        <input type="number" step="0.1" id="precip_7day_total_in" name="precip_7day_total_in" required>
-
-        <button type="submit">Predict Risk</button>
-    </form>
-
-    <div id="result"></div>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script>
         const form = document.getElementById('prediction-form');
         const resultDiv = document.getElementById('result');
 
         form.addEventListener('submit', async (event) => {
-            event.preventDefault(); // Prevent default form submission
-            resultDiv.textContent = 'Calculating...';
+            event.preventDefault();
+            // Update result div styling for loading state
+            resultDiv.textContent = '🔄 Calculating forest risk factors...';
+            resultDiv.className = 'alert alert-calculating mt-4 text-center'; // Use custom info style
 
             const formData = new FormData(form);
             const data = {};
             formData.forEach((value, key) => {
-                // Convert numerical fields from string to number
                 if (key === 'temp_7day_avg_f' || key === 'precip_7day_total_in') {
                     data[key] = parseFloat(value);
                 } else {
@@ -91,11 +273,9 @@
             });
 
             try {
-                const response = await fetch('/api/predict', { // Calls our backend function
+                const response = await fetch('/api/predict', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data),
                 });
 
@@ -105,12 +285,23 @@
                 }
 
                 const result = await response.json();
-                resultDiv.textContent = `Estimated Pest Risk: ${result.risk_percentage}%`;
-                 console.log("Raw Score:", result.raw_anomaly_score); // For debugging
+                // Enhanced result display with emojis
+                if (result.risk_percentage >= 75) {
+                    resultDiv.textContent = `🚨 HIGH RISK: ${result.risk_percentage}% pest probability`;
+                    resultDiv.className = 'alert alert-high-risk mt-4 text-center';
+                } else if (result.risk_percentage >= 40) {
+                    resultDiv.textContent = `⚠️ MEDIUM RISK: ${result.risk_percentage}% pest probability`;
+                    resultDiv.className = 'alert alert-medium-risk mt-4 text-center';
+                } else {
+                    resultDiv.textContent = `✅ LOW RISK: ${result.risk_percentage}% pest probability`;
+                    resultDiv.className = 'alert alert-low-risk mt-4 text-center';
+                }
+                console.log("Raw Score:", result.raw_anomaly_score);
 
             } catch (error) {
                 console.error('Prediction failed:', error);
-                resultDiv.textContent = `Error: ${error.message}`;
+                resultDiv.textContent = `❌ Error: ${error.message}`;
+                resultDiv.className = 'alert alert-error mt-4 text-center'; // Use custom error style
             }
         });
     </script>
